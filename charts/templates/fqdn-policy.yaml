@@ -16,12 +16,6 @@ spec:
     to:
     - fqdns:
       - private.googleapis.com
-  - ports:
-    - port: 443
-      protocol: TCP
-    to:
-    - fqdns:
-      - slack.com
   podSelector:
     matchLabels:
       app: {{ .Release.Name }}
