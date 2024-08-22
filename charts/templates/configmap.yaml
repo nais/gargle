@@ -3,7 +3,7 @@ data:
   config.yaml: |
     project-id: "{{ .Values.managementProjectID }}"
     name: "{{ .Values.cluster }}"
-    location: "{{ .Values.location }}
+    location: "{{ .Values.location }}"
 
     images-from:
       apps/v1:
