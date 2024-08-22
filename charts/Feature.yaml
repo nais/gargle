@@ -1,5 +1,7 @@
 environmentKinds:
   - legacy
+  - onprem
+  - tenant
 
 values:
   managementProjectID:
