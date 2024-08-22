@@ -8,7 +8,7 @@ values:
     displayName: Management project ID
     description: The Google project ID where GAR resides
     computed:
-      template: "{{ .Env.project_id | quote }}"
+      template: "{{ .Management.project_id | quote }}"
   cluster:
     displayName: Cluster name
     description: Cluster name
