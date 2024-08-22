@@ -36,7 +36,6 @@ spec:
               volumeMounts:
               - name: config-volume
                 mountPath: /etc/config
-                subPath: config.yaml
               securityContext:
                 capabilities:
                   drop:
