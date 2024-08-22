@@ -72,7 +72,7 @@ jobs:
         with:
           name: ${{ env.NAME }}
           build_args: |
-            GO_VERSION=${{ steps.go_version.outputs.go_version }}-
+            GO_VERSION=${{ steps.go_version.outputs.go_version }}
           google_service_account: gh-${{ env.NAME }}
           workload_identity_provider: ${{ secrets.NAIS_IO_WORKLOAD_IDENTITY_PROVIDER }}
           push: true
@@ -99,14 +99,14 @@ jobs:
         run: |-
           helm push ${{ env.NAME }}*.tgz ${{ env.FEATURE_REPOSITORY }}
 
-  #rollout:
-  #  needs:
-  #    - build_and_push
-  #  runs-on: fasit-deploy
-  #  permissions:
-  #    id-token: write
-  #  steps:
-  #    - uses: nais/fasit-deploy@v2
-  #      with:
-  #        chart: ${{ env.FEATURE_REPOSITORY }}/${{ env.NAME }}
-  #        version: ${{ needs.build_and_push.outputs.version }}
+  rollout:
+    needs:
+      - build_and_push
+    runs-on: fasit-deploy
+    permissions:
+      id-token: write
+    steps:
+      - uses: nais/fasit-deploy@v2
+        with:
+          chart: ${{ env.FEATURE_REPOSITORY }}/${{ env.NAME }}
+          version: ${{ needs.build_and_push.outputs.version }}
