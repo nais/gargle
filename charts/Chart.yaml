@@ -1,0 +1,7 @@
+apiVersion: v2
+name: gargle
+description: Job for tagging images in GAR used in the cluster
+type: application
+version: v0.1.0
+sources:
+  - https://github.com/nais/gargle/tree/main/charts

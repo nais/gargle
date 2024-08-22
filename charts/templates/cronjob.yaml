@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  schedule: "0 12 * * MON-FRI"
+  timeZone: "Europe/Oslo"
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 1
+  suspend: false
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: {{ .Release.Name }}-user
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 65534
+            runAsNonRoot: true
+            runAsGroup: 65534
+            fsGroup: 65534
+          containers:
+            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+              name: {{ .Release.Name }}
+              volumeMounts:
+              - name: config-volume
+                mountPath: /etc/config
+                subPath: config.yaml
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                seccompProfile:
+                  type: RuntimeDefault
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+          volumes:
+          - name: config-volume
+            configMap:
+              name: {{ .Release.Name }}-config
+              items:
+                - key: config.yaml
+                  path: config.yaml

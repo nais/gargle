@@ -1,0 +1,7 @@
+image:
+  repository: europe-north1-docker.pkg.dev/nais-io/nais/images/gargle
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "main"
+
+location: europe-north1

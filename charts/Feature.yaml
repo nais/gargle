@@ -1,0 +1,20 @@
+environmentKinds:
+  - legacy
+
+values:
+  managementProjectID:
+    displayName: Management project ID
+    description: The Google project ID where GAR resides
+    computed:
+      template: "{{ .Env.project_id | quote }}"
+  cluster:
+    displayName: Cluster name
+    description: Cluster name
+    computed:
+      template: |
+        {{ .Env.name | quote }}
+  location:
+    displayName: Location
+    description: Location
+    config:
+      type: string

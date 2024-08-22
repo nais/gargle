@@ -1,0 +1,19 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    project-id: "{{ .Values.managementProjectID }}"
+    name: "{{ .Values.cluster }}"
+    location: "{{ .Values.location }}
+
+    images-from:
+      apps/v1:
+        - resource: replicasets
+          jsonpath: $.spec.template.spec.containers[*].image
+        - resource: statefulsets
+          jsonpath: $.spec.template.spec.containers[*].image
+      batch/v1:
+        - resource: jobs
+          jsonpath: $.spec.jobTemplate.spec.template.spec.containers[*].image
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
