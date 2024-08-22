@@ -165,10 +165,11 @@ func (t *Tagger) TagImage(ctx context.Context, reg Repository, name, tag, keepTa
 }
 
 func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {
+	fmt.Println("Untagging", name, tag)
 	time.Sleep(50 * time.Millisecond)
 	return nil
-	fmt.Println("Untagging", name, tag)
-	tagPrefix := strings.Replace(name, "/dockerImages/", "/packages/", 1) + "/tags/"
+
+	/*tagPrefix := strings.Replace(name, "/dockerImages/", "/packages/", 1) + "/tags/"
 
 	err := t.client.DeleteTag(ctx, &artifactregistrypb.DeleteTagRequest{
 		Name: tagPrefix + tag,
@@ -176,14 +177,15 @@ func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {
 	if err != nil {
 		return fmt.Errorf("untagging %q: %w", tagPrefix+tag, err)
 	}
-	return nil
+	return nil*/
 }
 
 func (t *Tagger) ApplyImageTag(ctx context.Context, reg Repository, version, pkg, tag string) error {
+	fmt.Println("Tagging", version, "with", reg.Tag(pkg, tag))
 	time.Sleep(50 * time.Millisecond)
 	return nil
-	fmt.Println("Tagging", version, "with", reg.Tag(pkg, tag))
-	_, err := t.client.CreateTag(ctx, &artifactregistrypb.CreateTagRequest{
+
+	/*_, err := t.client.CreateTag(ctx, &artifactregistrypb.CreateTagRequest{
 		Parent: reg.Image(pkg),
 		TagId:  tag,
 		Tag: &artifactregistrypb.Tag{
@@ -194,7 +196,7 @@ func (t *Tagger) ApplyImageTag(ctx context.Context, reg Repository, version, pkg
 	if err != nil && !alreadyExistsErr(err) {
 		return fmt.Errorf("failed to create tag for %q: %w", reg.Tag(pkg, tag), err)
 	}
-	return nil
+	return nil*/
 }
 
 func notFoundErr(err error) bool {
@@ -204,9 +206,9 @@ func notFoundErr(err error) bool {
 	return false
 }
 
-func alreadyExistsErr(err error) bool {
+/*func alreadyExistsErr(err error) bool {
 	if apiErr, ok := apierror.FromError(err); ok {
 		return apiErr.GRPCStatus().Code() == codes.AlreadyExists
 	}
 	return false
-}
+}*/

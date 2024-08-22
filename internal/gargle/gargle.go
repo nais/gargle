@@ -53,6 +53,7 @@ func Main(ctx context.Context) error {
 	fmt.Println("Gathered images in", time.Since(start))
 
 	tagger := NewTagger(ctx, artClient, cfg.Name, ig.imageList)
+	defer tagger.Close()
 
 	start = time.Now()
 	if err := tagger.Run(ctx, registries); err != nil {
