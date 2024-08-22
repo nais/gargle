@@ -4,6 +4,11 @@ environmentKinds:
   - tenant
 
 values:
+  projectID:
+    displayName: Project ID
+    description: The Google project ID
+    computed:
+      template: "{{ .Env.project_id | quote }}"
   managementProjectID:
     displayName: Management project ID
     description: The Google project ID where GAR resides
