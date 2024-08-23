@@ -9,4 +9,5 @@ image:
   tag: "main"
 
 location: europe-north1
-log-level: debug
+log:
+  level: debug
