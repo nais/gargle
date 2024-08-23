@@ -1,0 +1,30 @@
+{{- if or (eq .Values.fasit.env.kind "legacy") (eq .Values.fasit.env.kind "tenant") }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: "{{ .Release.Name }}"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - statefulsets
+      - replicasets
+      - pods
+      - jobs
+    verbs:
+      - list
+      - get
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: "{{ .Release.Name }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{ .Release.Name }}"
+subjects:
+  - kind: User
+    name: "{{ .Release.Name }}-user@{{ .Values.projectID }}.iam.gserviceaccount.com"
+{{- end }}
