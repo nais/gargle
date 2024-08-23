@@ -25,3 +25,8 @@ values:
     description: Location
     config:
       type: string
+  log-level:
+    displayName: Log level
+    description: Log level
+    config:
+      type: string

@@ -4,6 +4,7 @@ data:
     project-id: "{{ .Values.managementProjectID }}"
     name: "{{ .Values.cluster }}"
     location: "{{ .Values.location }}"
+    log-level: "{{ .Values.logLevel }}"
 
     images-from:
       apps/v1:
