@@ -1,3 +1,7 @@
+fasit:
+  env:
+    kind: ""
+
 image:
   repository: europe-north1-docker.pkg.dev/nais-io/nais/images/gargle
   pullPolicy: IfNotPresent
