@@ -31,6 +31,6 @@ roleRef:
   name: "{{ .Release.Name }}"
 subjects:
 - kind: ServiceAccount
-  name: "{{ .Release.Name }}"-user
+  name: "{{ .Release.Name }}-user"
   namespace: nais-system
 {{- end }}
