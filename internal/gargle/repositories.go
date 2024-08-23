@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 
 	artifactregistry "cloud.google.com/go/artifactregistry/apiv1"
 	"cloud.google.com/go/artifactregistry/apiv1/artifactregistrypb"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 )
 
@@ -38,7 +38,7 @@ func (r Repositories) URLs() []string {
 
 var regMatchRegistry = regexp.MustCompile(`^projects\/([^\/]+)\/locations\/([^\/]+)\/repositories\/([^\/]+)$`)
 
-func getRepositories(ctx context.Context, parent string, client *artifactregistry.Client) (Repositories, error) {
+func getRepositories(ctx context.Context, log *logrus.Logger, parent string, client *artifactregistry.Client) (Repositories, error) {
 	repos := client.ListRepositories(ctx, &artifactregistrypb.ListRepositoriesRequest{
 		Parent: parent, //"projects/" + projectID + "/locations/" + location,
 	})
@@ -64,7 +64,7 @@ func getRepositories(ctx context.Context, parent string, client *artifactregistr
 
 		parts := regMatchRegistry.FindStringSubmatch(repo.Name)
 		if len(parts) == 0 {
-			log.Println("invalid registry:", repo.Name)
+			log.Warn("invalid registry:", repo.Name)
 			continue
 		}
 		registries = append(registries, Repository{

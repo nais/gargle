@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	artifactregistry "cloud.google.com/go/artifactregistry/apiv1"
 	"cloud.google.com/go/artifactregistry/apiv1/artifactregistrypb"
 	"github.com/googleapis/gax-go/v2/apierror"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
@@ -20,13 +20,15 @@ type Tagger struct {
 	client      *artifactregistry.Client
 	knownImages *imageList
 	tagPrefix   string
+	log         *logrus.Logger
 }
 
-func NewTagger(ctx context.Context, client *artifactregistry.Client, envName string, knownImages *imageList) *Tagger {
+func NewTagger(ctx context.Context, log *logrus.Logger, client *artifactregistry.Client, envName string, knownImages *imageList) *Tagger {
 	return &Tagger{
 		client:      client,
 		knownImages: knownImages,
 		tagPrefix:   "keep-nais-" + envName + "-",
+		log:         log,
 	}
 }
 
@@ -37,21 +39,22 @@ func (t *Tagger) Close() error {
 func (t *Tagger) Run(ctx context.Context, repos Repositories) error {
 	wg, grpCtx := errgroup.WithContext(ctx)
 	wg.SetLimit(5)
-	for _, reg := range repos {
+	for _, r := range repos {
 		wg.Go(func() error {
-			if err := t.cleanRegistry(grpCtx, reg.Name); err != nil {
-				return fmt.Errorf("failed to clean registry: %w", err)
+			t.log.Debugf("Cleaning and tagging registry %q", r.Name)
+			if err := t.cleanRepository(grpCtx, r.Name); err != nil {
+				return fmt.Errorf("failed to clean repository: %w", err)
 			}
-			return t.TagRegistry(grpCtx, reg)
+			return t.TagRegistry(grpCtx, r)
 		})
 	}
 
 	return wg.Wait()
 }
 
-func (t *Tagger) cleanRegistry(ctx context.Context, registry string) error {
+func (t *Tagger) cleanRepository(ctx context.Context, repository string) error {
 	iter := t.client.ListDockerImages(ctx, &artifactregistrypb.ListDockerImagesRequest{
-		Parent: registry,
+		Parent: repository,
 	})
 
 OUTER:
@@ -165,11 +168,8 @@ func (t *Tagger) TagImage(ctx context.Context, reg Repository, name, tag, keepTa
 }
 
 func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {
-	fmt.Println("Untagging", name, tag)
-	time.Sleep(50 * time.Millisecond)
-	return nil
-
-	/*tagPrefix := strings.Replace(name, "/dockerImages/", "/packages/", 1) + "/tags/"
+	t.log.Debugf("Untagging %q", tag)
+	tagPrefix := strings.Replace(name, "/dockerImages/", "/packages/", 1) + "/tags/"
 
 	err := t.client.DeleteTag(ctx, &artifactregistrypb.DeleteTagRequest{
 		Name: tagPrefix + tag,
@@ -177,15 +177,12 @@ func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {
 	if err != nil {
 		return fmt.Errorf("untagging %q: %w", tagPrefix+tag, err)
 	}
-	return nil*/
+	return nil
 }
 
 func (t *Tagger) ApplyImageTag(ctx context.Context, reg Repository, version, pkg, tag string) error {
-	fmt.Println("Tagging", version, "with", reg.Tag(pkg, tag))
-	time.Sleep(50 * time.Millisecond)
-	return nil
-
-	/*_, err := t.client.CreateTag(ctx, &artifactregistrypb.CreateTagRequest{
+	t.log.Debugf("Tagging %q with %q", reg.Tag(pkg, tag), version)
+	_, err := t.client.CreateTag(ctx, &artifactregistrypb.CreateTagRequest{
 		Parent: reg.Image(pkg),
 		TagId:  tag,
 		Tag: &artifactregistrypb.Tag{
@@ -196,7 +193,7 @@ func (t *Tagger) ApplyImageTag(ctx context.Context, reg Repository, version, pkg
 	if err != nil && !alreadyExistsErr(err) {
 		return fmt.Errorf("failed to create tag for %q: %w", reg.Tag(pkg, tag), err)
 	}
-	return nil*/
+	return nil
 }
 
 func notFoundErr(err error) bool {
@@ -206,9 +203,9 @@ func notFoundErr(err error) bool {
 	return false
 }
 
-/*func alreadyExistsErr(err error) bool {
+func alreadyExistsErr(err error) bool {
 	if apiErr, ok := apierror.FromError(err); ok {
 		return apiErr.GRPCStatus().Code() == codes.AlreadyExists
 	}
 	return false
-}*/
+}

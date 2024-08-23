@@ -59,6 +59,7 @@ type Config struct {
 	Location   string     `yaml:"location"`
 	Kubeconfig string     `yaml:"kubeconfig"`
 	ImagesFrom ImagesFrom `yaml:"images-from"`
+	LogLevel   string     `yaml:"log-level"`
 }
 
 func getConfig(path string) (Config, error) {
