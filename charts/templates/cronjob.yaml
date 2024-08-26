@@ -17,6 +17,11 @@ spec:
           labels:
             app: {{ .Release.Name }}
         spec:
+          env:
+          {{ if .Values.gargle_key }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/run/secrets/google/key.json
+          {{ end }}
           restartPolicy: Never
           serviceAccountName: {{ .Release.Name }}-user
           securityContext:
@@ -36,6 +41,10 @@ spec:
               volumeMounts:
               - name: config-volume
                 mountPath: /etc/config
+              {{ if .Values.gargle_key }}
+              - mountPath: /var/run/secrets/google
+                name: google-service-account
+              {{ end }}
               securityContext:
                 capabilities:
                   drop:
@@ -51,3 +60,8 @@ spec:
               items:
                 - key: config.yaml
                   path: config.yaml
+          {{ if .Values.gargle_key }}
+          - name: google-service-account
+            secret:
+              secretName: {{ .Release.Name }}-google-sa-key
+          {{ end }}

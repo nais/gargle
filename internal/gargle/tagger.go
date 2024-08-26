@@ -128,14 +128,14 @@ func (t *Tagger) KeepImage(ctx context.Context, reg Repository, name, tag string
 	}
 
 	// Tag sig and att images
-	if _, _, err := t.TagImage(ctx, reg, name, version+".sig", keepTag); err != nil {
+	if _, _, err := t.TagImage(ctx, reg, name, version+".sig", keepTag+".sig"); err != nil {
 		if notFoundErr(err) {
 			return nil
 		}
 		log.Printf("sig image: %v", err)
 	}
 
-	if _, _, err := t.TagImage(ctx, reg, name, version+".att", keepTag); err != nil {
+	if _, _, err := t.TagImage(ctx, reg, name, version+".att", keepTag+".att"); err != nil {
 		if notFoundErr(err) {
 			return nil
 		}

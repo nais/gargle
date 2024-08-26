@@ -16,10 +16,18 @@ values:
       template: "{{ .Management.project_id | quote }}"
   cluster:
     displayName: Cluster name
-    description: Cluster name
     computed:
       template: |
         {{ .Env.name | quote }}
+  gargle_key:
+    displayName: Google SA key
+    ignoreKind:
+      - legacy
+      - tenant
+      - management
+    computed:
+      template: |
+        {{ .Env.gargle_key | quote }}
   location:
     displayName: Location
     description: Location
