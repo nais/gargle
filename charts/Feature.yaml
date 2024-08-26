@@ -38,3 +38,19 @@ values:
     description: Log level
     config:
       type: string
+  https_proxy:
+    displayName: HTTPS proxy
+    config:
+      type: string
+    ignoreKind:
+      - tenant
+      - management
+      - legacy
+  no_proxy:
+    displayName: No proxy
+    config:
+      type: string
+    ignoreKind:
+      - tenant
+      - management
+      - legacy

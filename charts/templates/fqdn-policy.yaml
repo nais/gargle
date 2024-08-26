@@ -1,3 +1,4 @@
+{{- if .Capabilities.APIVersions.Has "networking.gke.io/v1alpha3" }}
 apiVersion: networking.gke.io/v1alpha3
 kind: FQDNNetworkPolicy
 metadata:
@@ -21,3 +22,4 @@ spec:
       app: {{ .Release.Name }}
   policyTypes:
   - Egress
+{{- end }}
