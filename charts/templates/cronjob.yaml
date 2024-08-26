@@ -17,19 +17,6 @@ spec:
           labels:
             app: {{ .Release.Name }}
         spec:
-          env:
-          {{ if .Values.gargle_key }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/run/secrets/google/key.json
-          {{ end }}
-          {{ if .Values.https_proxy }}
-            - name: HTTPS_PROXY
-              value: {{ .Values.https_proxy }}
-          {{ end }}
-          {{ if .Values.no_proxy }}
-            - name: NO_PROXY
-              value: {{ .Values.no_proxy }}
-          {{ end }}
           restartPolicy: Never
           serviceAccountName: {{ .Release.Name }}-user
           securityContext:
@@ -40,7 +27,22 @@ spec:
             runAsGroup: 65534
             fsGroup: 65534
           containers:
-            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            - env:
+              - name: HACK
+                value: "true"
+            {{- if .Values.gargle_key }}
+              - name: GOOGLE_APPLICATION_CREDENTIALS
+                value: /var/run/secrets/google/key.json
+            {{- end }}
+            {{- if .Values.https_proxy }}
+              - name: HTTPS_PROXY
+                value: {{ .Values.https_proxy }}
+            {{- end }}
+            {{- if .Values.no_proxy }}
+              - name: NO_PROXY
+                value: {{ .Values.no_proxy }}
+            {{- end }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: "{{ .Values.image.pullPolicy }}"
               name: {{ .Release.Name }}
               args:
