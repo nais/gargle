@@ -8,7 +8,7 @@ require (
 	github.com/ohler55/ojg v1.24.0
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/sync v0.8.0
-	google.golang.org/api v0.194.0
+	google.golang.org/api v0.195.0
 	google.golang.org/grpc v1.65.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.31.0
