@@ -1,0 +1,9 @@
+[project]
+id = "io.nais.gargle"
+name = "Gargle"
+
+[build]
+exclude = ["README.md", "Makefile", "config.example.yaml", "charts", ".github"]
+
+[[build.buildpacks]]
+uri = "gcr.io/paketo-buildpacks/go"
