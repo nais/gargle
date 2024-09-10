@@ -10,4 +10,4 @@ image:
 
 location: europe-north1
 log:
-  level: debug
+  level: info
