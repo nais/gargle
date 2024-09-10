@@ -26,7 +26,7 @@ func Main(ctx context.Context) error {
 	log := newLogger(cfg.LogLevel)
 	log.Info("Starting gargle")
 
-	artClient, err := artifactregistry.NewClient(ctx)
+	artClient, err := artifactregistry.NewRESTClient(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to create artifact registry client: %w", err)
 	}
