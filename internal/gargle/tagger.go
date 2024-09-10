@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	artifactregistry "cloud.google.com/go/artifactregistry/apiv1"
@@ -124,7 +123,7 @@ func (t *Tagger) KeepImage(ctx context.Context, reg Repository, name, tag string
 		if notFoundErr(err) {
 			return nil
 		}
-		log.Printf("base image: %v", err)
+		t.log.Debugf("base image: %v", err)
 	}
 
 	// Tag sig and att images
@@ -132,14 +131,14 @@ func (t *Tagger) KeepImage(ctx context.Context, reg Repository, name, tag string
 		if notFoundErr(err) {
 			return nil
 		}
-		log.Printf("sig image: %v", err)
+		t.log.Debugf("sig image: %v", err)
 	}
 
 	if _, _, err := t.TagImage(ctx, reg, name, version+".att", keepTag+".att"); err != nil {
 		if notFoundErr(err) {
 			return nil
 		}
-		log.Printf("att image: %v", err)
+		t.log.Debugf("att image: %v", err)
 	}
 
 	return nil
@@ -174,7 +173,7 @@ func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {
 	err := t.client.DeleteTag(ctx, &artifactregistrypb.DeleteTagRequest{
 		Name: tagPrefix + tag,
 	})
-	if err != nil {
+	if err != nil && !notFoundErr(err) {
 		return fmt.Errorf("untagging %q: %w", tagPrefix+tag, err)
 	}
 	return nil
