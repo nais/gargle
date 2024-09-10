@@ -8,7 +8,7 @@ RUN go mod download
 COPY . /src
 RUN go build -o bin/gargle ./main.go
 
-FROM gcr.io/distroless/base
+FROM gcr.io/distroless/static
 WORKDIR /app
 COPY --from=builder /src/bin/gargle /app/gargle
 ENTRYPOINT ["/app/gargle"]
