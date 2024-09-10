@@ -18,3 +18,5 @@ data:
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
+  labels:
+    app: {{ .Release.Name }}

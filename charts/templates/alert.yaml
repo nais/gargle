@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  groups:
+    - name: gargle running
+      rules:
+        - alert: GargleNotRunning
+          expr: 'time() - max(kube_job_status_completion_time{job_name=~"{{ .Release.Name }}.+"}) > (4*60*60*24)'
+          for: 1m
+          annotations:
+            description: "Job is scheduled to run every weekday, and is responsible for tagging images in use in the cluster."
+            action: "Check if Job has run successfully:\n- `kubectl describe cronjob -n {{ .Release.Namespace }} {{ .Release.Name }}`\n- `kubectl describe pod -l app={{ .Release.Name }}`\n- `kubectl logs -l app={{ .Release.Name }} --tail=1000`"
+            sla: respond within office hours
+          labels:
+            severity: warning
+            feature: gargle
+            cluster: "{{ .Values.clusterName }}"
+            namespace: nais-system

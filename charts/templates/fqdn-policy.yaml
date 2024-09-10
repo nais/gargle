@@ -3,6 +3,8 @@ apiVersion: networking.gke.io/v1alpha3
 kind: FQDNNetworkPolicy
 metadata:
   name: {{ .Release.Name }}-fqdn
+  labels:
+    app: {{ .Release.Name }}
 spec:
   egress:
   - ports:
