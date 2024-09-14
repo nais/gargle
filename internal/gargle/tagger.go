@@ -15,6 +15,10 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+const (
+	ErrorStatusNotFound = "Error 404"
+)
+
 type Tagger struct {
 	client      *artifactregistry.Client
 	knownImages *imageList
@@ -92,6 +96,7 @@ OUTER:
 
 				// Untag tag.sig and tag.att
 				if err := t.UntagImage(ctx, name, tag+".sig"); err != nil && !notFoundErr(err) {
+					fmt.Println("LOL")
 					return fmt.Errorf("failed to untag image: %w", err)
 				}
 
@@ -203,7 +208,13 @@ func notFoundErr(err error) bool {
 	}
 
 	if grpcStatus := apiErr.GRPCStatus(); grpcStatus != nil {
-		return grpcStatus.Code() == codes.NotFound
+		if grpcStatus.Code() == codes.NotFound {
+			return true
+		}
+
+		if apiErr.GRPCStatus().Code() == codes.Unknown && strings.Contains(apiErr.Error(), ErrorStatusNotFound) {
+			return true
+		}
 	}
 
 	return apiErr.HTTPCode() == 404
