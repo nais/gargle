@@ -195,14 +195,18 @@ func (t *Tagger) ApplyImageTag(ctx context.Context, reg Repository, version, pkg
 	return nil
 }
 
+// simplify error handling
 func notFoundErr(err error) bool {
-	if apiErr, ok := apierror.FromError(err); ok {
-		if apiErr.GRPCStatus() == nil {
-			return apiErr.HTTPCode() == 404
-		}
-		return apiErr.GRPCStatus().Code() == codes.NotFound
+	apiErr, ok := apierror.FromError(err)
+	if !ok {
+		return false
 	}
-	return false
+
+	if grpcStatus := apiErr.GRPCStatus(); grpcStatus != nil {
+		return grpcStatus.Code() == codes.NotFound
+	}
+
+	return apiErr.HTTPCode() == 404
 }
 
 func alreadyExistsErr(err error) bool {
