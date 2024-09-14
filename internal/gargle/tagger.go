@@ -96,7 +96,6 @@ OUTER:
 
 				// Untag tag.sig and tag.att
 				if err := t.UntagImage(ctx, name, tag+".sig"); err != nil && !notFoundErr(err) {
-					fmt.Println("LOL")
 					return fmt.Errorf("failed to untag image: %w", err)
 				}
 
