@@ -211,7 +211,7 @@ func notFoundErr(err error) bool {
 			return true
 		}
 
-		if apiErr.GRPCStatus().Code() == codes.Unknown && strings.Contains(apiErr.Error(), ErrorStatusNotFound) {
+		if grpcStatus.Code() == codes.Unknown && strings.Contains(apiErr.Error(), ErrorStatusNotFound) {
 			return true
 		}
 	}
