@@ -3,7 +3,7 @@ module github.com/nais/gargle
 go 1.23.0
 
 require (
-	cloud.google.com/go/artifactregistry v1.15.0
+	cloud.google.com/go/artifactregistry v1.15.1
 	github.com/googleapis/gax-go/v2 v2.13.0
 	github.com/ohler55/ojg v1.24.0
 	github.com/sirupsen/logrus v1.9.3
