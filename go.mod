@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	cloud.google.com/go/artifactregistry v1.15.0
 	github.com/googleapis/gax-go/v2 v2.13.0
-	github.com/ohler55/ojg v1.24.0
+	github.com/ohler55/ojg v1.24.1
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/sync v0.8.0
 	google.golang.org/api v0.196.0
