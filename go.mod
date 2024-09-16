@@ -9,7 +9,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/sync v0.8.0
 	google.golang.org/api v0.196.0
-	google.golang.org/grpc v1.66.1
+	google.golang.org/grpc v1.66.2
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.31.0
 	k8s.io/client-go v0.31.0
