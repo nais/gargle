@@ -8,8 +8,8 @@ require (
 	github.com/ohler55/ojg v1.24.0
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/sync v0.8.0
-	google.golang.org/api v0.196.0
-	google.golang.org/grpc v1.66.1
+	google.golang.org/api v0.199.0
+	google.golang.org/grpc v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.31.0
 	k8s.io/client-go v0.31.0
@@ -17,9 +17,9 @@ require (
 
 require (
 	cloud.google.com/go v0.115.1 // indirect
-	cloud.google.com/go/auth v0.9.3 // indirect
+	cloud.google.com/go/auth v0.9.5 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
-	cloud.google.com/go/compute/metadata v0.5.0 // indirect
+	cloud.google.com/go/compute/metadata v0.5.2 // indirect
 	cloud.google.com/go/iam v1.2.0 // indirect
 	cloud.google.com/go/longrunning v0.6.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
