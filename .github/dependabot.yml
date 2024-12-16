@@ -4,11 +4,24 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      gomod:
+        patterns:
+          - "k8s.io*"
+          - "*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      gh:
+        patterns:
+          - "*"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      docker:
+        patterns:
+          - "*"
