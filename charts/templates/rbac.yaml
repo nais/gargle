@@ -9,6 +9,7 @@ rules:
   - batch
   resources:
   - jobs
+  - cronjobs
   verbs:
   - get
   - list
