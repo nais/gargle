@@ -8,11 +8,11 @@ require (
 	github.com/ohler55/ojg v1.26.1
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/sync v0.10.0
-	google.golang.org/api v0.216.0
+	google.golang.org/api v0.217.0
 	google.golang.org/grpc v1.69.4
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.32.0
-	k8s.io/client-go v0.32.0
+	k8s.io/apimachinery v0.32.1
+	k8s.io/client-go v0.32.1
 )
 
 require (
