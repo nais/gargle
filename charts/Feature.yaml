@@ -19,6 +19,8 @@ values:
     computed:
       template: |
         {{ .Env.name | quote }}
+    config:
+      type: string
   gargle_key:
     displayName: Google SA key
     ignoreKind:
