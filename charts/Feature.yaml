@@ -1,5 +1,4 @@
 environmentKinds:
-  - legacy
   - onprem
   - tenant
 
@@ -24,7 +23,6 @@ values:
   gargle_key:
     displayName: Google SA key
     ignoreKind:
-      - legacy
       - tenant
       - management
     computed:
@@ -47,7 +45,6 @@ values:
     ignoreKind:
       - tenant
       - management
-      - legacy
   no_proxy:
     displayName: No proxy
     config:
@@ -55,4 +52,3 @@ values:
     ignoreKind:
       - tenant
       - management
-      - legacy
