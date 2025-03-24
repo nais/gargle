@@ -1,6 +1,6 @@
 module github.com/nais/gargle
 
-go 1.23.0
+go 1.24.1
 
 require (
 	cloud.google.com/go/artifactregistry v1.16.1

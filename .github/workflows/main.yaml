@@ -21,22 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: asdf-vm/actions/setup@v3
-
-      - id: asdf-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.asdf/
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-
-      - uses: asdf-vm/actions/install@v3
-        if: steps.asdf-cache.outputs.cache-hit != 'true'
-        with:
-          before_install: |
-            asdf install golang latest
-            asdf global golang latest
-
+      - uses: jdx/mise-action@v2
       - name: Find go cache dir
         id: go-cache
         run: |
@@ -45,7 +30,6 @@ jobs:
           go clean -cache -modcache
           echo "gocache=$(go env GOCACHE)" >> $GITHUB_OUTPUT
           echo "gomodcache=$(go env GOMODCACHE)" >> $GITHUB_OUTPUT
-
       - name: Cache go modules
         uses: actions/cache@v4
         with:
@@ -53,7 +37,6 @@ jobs:
             ${{ steps.go-cache.outputs.gocache }}
             ${{ steps.go-cache.outputs.gomodcache }}
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
       - run: go test ./...
       - run: helm lint --strict ./charts
       - run: make staticcheck
@@ -65,7 +48,7 @@ jobs:
           git diff --exit-code --name-only
 
       - id: go_version
-        run: echo "go_version=$(asdf current golang | awk '{print $2}')" >> $GITHUB_OUTPUT
+        run: echo "go_version=$(mise current go)" >> $GITHUB_OUTPUT
 
       - uses: nais/platform-build-push-sign@main
         id: build-push-sign
