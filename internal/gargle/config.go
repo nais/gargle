@@ -63,7 +63,7 @@ type Config struct {
 }
 
 func getConfig(path string) (Config, error) {
-	f, err := os.Open(path)
+	f, err := os.Open(path) // #nosec G304
 	if err != nil {
 		return Config{}, err
 	}
