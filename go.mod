@@ -17,7 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.9.4
 	golang.org/x/sync v0.22.0
 	google.golang.org/api v0.291.0
-	google.golang.org/grpc v1.82.1
+	google.golang.org/grpc v1.83.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.36.3
 	k8s.io/client-go v0.36.3
