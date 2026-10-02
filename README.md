@@ -41,6 +41,11 @@ Gargle will iterate through every registry from step 1 and verify that all image
 
 It will also tag all images from step 2 with the `keep-nais-[name]-[calculated-sha]` tag.
 
+Cleanup and tagging failures are logged without stopping other images or repositories.
+Missing base images are logged and skipped; missing signature or attestation images are optional.
+This includes Artifact Registry's HTTP 400 "the referenced version does not exist" response.
+Other failures cause Gargle to exit unsuccessfully after processing finishes.
+
 ## Deleting images
 
 This service is designed to be used with [Google Artifact Registry Cleanup Policy](https://cloud.google.com/artifact-registry/docs/repositories/cleanup-policy).
