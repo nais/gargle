@@ -66,13 +66,17 @@ OUTER:
 			return fmt.Errorf("failed to list docker images: %w", err)
 		}
 
+		uriName, digest, _ := strings.Cut(resp.Uri, "@")
+		if t.knownImages.HasImage(uriName, digest) {
+			continue
+		}
+
 		// Ignore sig and att images
 		for _, tag := range resp.Tags {
 			if !strings.HasPrefix(tag, t.tagPrefix) && (strings.HasSuffix(tag, ".sig") || strings.HasSuffix(tag, ".att")) {
 				continue OUTER
 			}
 
-			uriName, _, _ := strings.Cut(resp.Uri, "@")
 			if t.knownImages.HasImage(uriName, tag) {
 				continue OUTER
 			}
@@ -121,49 +125,51 @@ func (t *Tagger) KeepImage(ctx context.Context, reg Repository, name, tag string
 	version, keepTag, err := t.TagImage(ctx, reg, name, tag, "")
 	if err != nil {
 		if notFoundErr(err) {
+			t.log.Warnf("Image %s at %s not found: %v", name, tag, err)
 			return nil
 		}
-		t.log.Debugf("base image: %v", err)
+		return fmt.Errorf("base image: %w", err)
 	}
 
 	// Tag sig and att images
-	if _, _, err := t.TagImage(ctx, reg, name, version+".sig", keepTag+".sig"); err != nil {
-		if notFoundErr(err) {
-			return nil
-		}
-		t.log.Debugf("sig image: %v", err)
+	if _, _, err := t.TagImage(ctx, reg, name, version+".sig", keepTag+".sig"); err != nil && !notFoundErr(err) {
+		return fmt.Errorf("sig image: %w", err)
 	}
 
-	if _, _, err := t.TagImage(ctx, reg, name, version+".att", keepTag+".att"); err != nil {
-		if notFoundErr(err) {
-			return nil
-		}
-		t.log.Debugf("att image: %v", err)
+	if _, _, err := t.TagImage(ctx, reg, name, version+".att", keepTag+".att"); err != nil && !notFoundErr(err) {
+		return fmt.Errorf("att image: %w", err)
 	}
 
 	return nil
 }
 
 func (t *Tagger) TagImage(ctx context.Context, reg Repository, name, tag, keepTag string) (string, string, error) {
-	pkg := strings.Trim(strings.ReplaceAll(name, reg.URL, ""), "/")
+	pkg := strings.TrimPrefix(name, reg.URL+"/")
 
-	image, err := t.client.GetTag(ctx, &artifactregistrypb.GetTagRequest{
-		Name: reg.Tag(pkg, tag),
-	})
-	if err != nil {
-		return "", "", fmt.Errorf("failed to get docker image %q: %w", reg.Tag(pkg, tag), err)
+	imageVersion := ""
+	if keepTag == "" && strings.Contains(tag, ":") {
+		// Pinned digests are authoritative, even if the accompanying tag has moved.
+		imageVersion = reg.Image(pkg) + "/versions/" + tag
+	} else {
+		image, err := t.client.GetTag(ctx, &artifactregistrypb.GetTagRequest{
+			Name: reg.Tag(pkg, tag),
+		})
+		if err != nil {
+			return "", "", fmt.Errorf("failed to get docker image %q: %w", reg.Tag(pkg, tag), err)
+		}
+		imageVersion = image.Version
 	}
 
 	version := ""
 	if keepTag == "" {
-		versionParts := strings.Split(image.Version, "/")
+		versionParts := strings.Split(imageVersion, "/")
 		version = strings.ReplaceAll(versionParts[len(versionParts)-1], ":", "-")
 
 		keepTag = (t.tagPrefix + version)
 	}
 
 	// Tag the image
-	return version, keepTag, t.ApplyImageTag(ctx, reg, image.Version, pkg, keepTag)
+	return version, keepTag, t.ApplyImageTag(ctx, reg, imageVersion, pkg, keepTag)
 }
 
 func (t *Tagger) UntagImage(ctx context.Context, name, tag string) error {

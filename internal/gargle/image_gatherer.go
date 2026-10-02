@@ -17,7 +17,7 @@ import (
 type imageList struct {
 	lock sync.RWMutex
 
-	// list is the list of images with their tags
+	// list maps image names to tags or pinned digests.
 	list map[string][]string
 }
 
@@ -25,16 +25,21 @@ func (i *imageList) AddImage(image string) {
 	if strings.HasPrefix(image, "-") {
 		return
 	}
-	// For testing, only accept these images:
-	name, tag, found := strings.Cut(image, ":")
-	if !found {
+	name, reference, pinned := strings.Cut(image, "@")
+	tagSeparator := strings.LastIndex(name, ":")
+	if tagSeparator > strings.LastIndex(name, "/") {
+		if !pinned {
+			reference = name[tagSeparator+1:]
+		}
+		name = name[:tagSeparator]
+	} else if !pinned {
 		return
 	}
 
 	i.lock.Lock()
 	defer i.lock.Unlock()
 
-	tags := append(i.list[name], tag)
+	tags := append(i.list[name], reference)
 	slices.Sort(tags)
 	i.list[name] = slices.Compact(tags)
 }
@@ -57,7 +62,7 @@ func (t *imageList) ForPrefix(prefix string) map[string][]string {
 
 	m := make(map[string][]string)
 	for name, tags := range t.list {
-		if strings.HasPrefix(name, prefix) {
+		if strings.HasPrefix(name, prefix+"/") {
 			m[name] = tags
 		}
 	}
@@ -112,7 +117,7 @@ func (i *ImageGatherer) gatherResource(ctx context.Context, client *dynamic.Dyna
 
 			found := false
 			for _, prefix := range prefixes {
-				if strings.HasPrefix(img, prefix) {
+				if strings.HasPrefix(img, prefix+"/") {
 					found = true
 					break
 				}

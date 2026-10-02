@@ -31,6 +31,10 @@ This configuration will get all images from all replicasets in the cluster.
 
 The source list is filtered to only include images that are in the registries fetched in the previous step.
 
+Both tag references (`image:tag`) and digest-pinned references (`image@sha256:digest`
+or `image:tag@sha256:digest`) are supported. For pinned references, Gargle protects
+the exact digest, even if the accompanying tag has moved or been deleted.
+
 ### 3. Tag images
 
 Gargle will iterate through every registry from step 1 and verify that all images with a `keep-nais-[name]` is still in use, removing the tag if it is not.
