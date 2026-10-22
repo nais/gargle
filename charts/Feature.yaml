@@ -1,6 +1,9 @@
 environmentKinds:
   - onprem
   - tenant
+dependencies:
+  - allOf:
+      - fqdn-policy-crds
 
 values:
   projectID:
