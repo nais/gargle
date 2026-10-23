@@ -20,8 +20,8 @@ jobs:
     name: build and push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # ratchet:actions/checkout@v4
-      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # ratchet:jdx/mise-action@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
+      - uses: jdx/mise-action@8418fedb1110381a0d3ba51a7a415d7c1b884550 # ratchet:jdx/mise-action@v5
       - name: Find go cache dir
         id: go-cache
         run: |
@@ -67,10 +67,10 @@ jobs:
           value: ${{ steps.build-push-sign.outputs.version }}
           commitChange: false
 
-      - uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # ratchet:azure/setup-helm@v4
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # ratchet:azure/setup-helm@v5
         name: "Setup Helm"
         with:
-          version: "v3.14.2"
+          version: "v3.21.4"
 
       - name: Build Chart
         run: |-
@@ -89,7 +89,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: nais/fasit-deploy@58a70a338b16dc646373c91724fc7e7522d085a4 # ratchet:nais/fasit-deploy@v4.0.1
+      - uses: nais/fasit-deploy@9f870e05e92cde6cfd827b13384ec09e80be65fd # ratchet:nais/fasit-deploy@v4.1.0
         with:
           chart: ${{ env.FEATURE_REPOSITORY }}/${{ env.NAME }}
           version: ${{ needs.build_and_push.outputs.version }}
