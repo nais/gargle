@@ -1,6 +1,6 @@
 module github.com/nais/gargle
 
-go 1.26.10
+go 1.27.3
 
 tool (
 	github.com/securego/gosec/v2/cmd/gosec
